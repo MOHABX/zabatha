@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ظبطها | التحميل المباشر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep-teal: #0E2F2E;
+            --aqua-laser: #2EF2E2;
+            --sunset-tangerine: #FE9E6D;
+            --deep-ink-blue: #192237;
+            --card-glass: rgba(25, 34, 55, 0.65);
+            --card-border: rgba(46, 242, 226, 0.2);
+            --text-main: #FFFFFF;
+            --text-muted: #B3C5C3;
+        }
+
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-deep-teal);
+            color: var(--text-main);
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding-bottom: 50px;
+        }
+
+        header {
+            width: 100%;
+            padding: 50px 24px 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: radial-gradient(circle at top, rgba(46, 242, 226, 0.15), transparent 70%);
+        }
+
+        header h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: var(--aqua-laser);
+            text-shadow: 0 0 20px rgba(46, 242, 226, 0.4);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 700px;
+        }
+
+        /* المعرض ثلاثي الأبعاد 3D Coverflow */
+        .girly {
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 540px;
+            margin-bottom: 40px;
+            perspective: 1200px;
+            overflow: hidden;
+        }
+
+        .carousel-stage {
+            position: relative;
+            width: 320px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 250px;
+            height: 470px;
+            border-radius: 26px;
+            object-fit: cover;
+            border: 3px solid var(--card-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            pointer-events: none;
+            transform: translate3d(0, 0, -250px) scale(0.7);
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+            z-index: 10;
+            transform: translate3d(0, 0, 60px) scale(1.08);
+            border-color: var(--aqua-laser);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(46, 242, 226, 0.35);
+            pointer-events: auto;
+        }
+
+        .carousel-item.prev {
+            opacity: 0.65;
+            z-index: 5;
+            transform: translate3d(150px, 0, -80px) scale(0.85);
+            pointer-events: auto;
+            filter: brightness(0.65);
+        }
+
+        .carousel-item.next {
+            opacity: 0.65;
+            z-index: 5;
+            transform: translate3d(-150px, 0, -80px) scale(0.85);
+            pointer-events: auto;
+            filter: brightness(0.65);
+        }
+
+        .carousel-item.far-prev {
+            opacity: 0.25;
+            z-index: 2;
+            transform: translate3d(270px, 0, -190px) scale(0.7);
+        }
+
+        .carousel-item.far-next {
+            opacity: 0.25;
+            z-index: 2;
+            transform: translate3d(-270px, 0, -190px) scale(0.7);
+        }
+
+        .girly .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+            z-index: 20;
+        }
+
+        .girly .nav-btn.right-btn { right: 25px; }
+        .girly .nav-btn.left-btn { left: 25px; }
+
+        .girly .nav-btn img {
+            width: 22px;
+            height: 22px;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(21%) saturate(2251%) hue-rotate(124deg) brightness(100%) contrast(97%);
+        }
+
+        .girly .nav-btn:hover {
+            background: var(--aqua-laser);
+            box-shadow: 0 0 15px rgba(46, 242, 226, 0.5);
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .girly .nav-btn:hover img {
+            filter: brightness(0) saturate(100%) invert(14%) sepia(16%) saturate(1637%) hue-rotate(130deg) brightness(96%) contrast(92%);
+        }
+
+        /* كروت المعلومات */
+        .info {
+            width: 100%;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info a {
+            text-decoration: none;
+            display: block;
+        }
+
+        .info .card {
+            background: var(--card-glass);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            height: 100%;
+        }
+
+        .info .card:hover {
+            border-color: var(--sunset-tangerine);
+            transform: translateY(-4px);
+        }
+
+        .info .card p {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .info .card img {
+            width: 32px;
+            height: 32px;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(21%) saturate(2251%) hue-rotate(124deg) brightness(100%) contrast(97%);
+        }
+
+        /* قسم التحميل */
+        .downlod {
+            width: 100%;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .downlod .btn-link {
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .downlod .card {
+            width: 100%;
+            padding: 18px 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--deep-ink-blue);
+            border: 1px solid rgba(254, 158, 109, 0.25);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .downlod .card.primary {
+            background: var(--sunset-tangerine);
+            border: none;
+            box-shadow: 0 10px 25px -5px rgba(254, 158, 109, 0.45);
+        }
+
+        .downlod .card.primary span {
+            color: var(--deep-ink-blue);
+            font-weight: 900;
+        }
+
+        .downlod .card.primary img {
+            filter: brightness(0) saturate(100%) invert(12%) sepia(22%) saturate(1637%) hue-rotate(185deg) brightness(97%) contrast(94%);
+        }
+
+        .downlod .card:not(.primary):hover {
+            border-color: var(--aqua-laser);
+            background: rgba(25, 34, 55, 0.9);
+            transform: translateY(-3px);
+        }
+
+        .downlod .card span {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .downlod .card img {
+            width: 30px;
+            height: 30px;
+            filter: brightness(0) saturate(100%) invert(86%) sepia(21%) saturate(2251%) hue-rotate(124deg) brightness(100%) contrast(97%);
+        }
+
+        /* عارض الشاشة الكاملة (Lightbox) */
+        .lightbox-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(6, 9, 19, 0.96);
+            backdrop-filter: blur(14px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            touch-action: pan-y;
+        }
+
+        .lightbox-modal.active {
+            display: flex;
+        }
+
+        .lightbox-img-wrapper {
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-img-wrapper img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 20px;
+            border: 2px solid var(--aqua-laser);
+            box-shadow: 0 0 35px rgba(46, 242, 226, 0.25);
+            object-fit: contain;
+            user-select: none;
+        }
+
+        .lightbox-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(25, 34, 55, 0.85);
+            border: 1px solid var(--card-border);
+            color: var(--aqua-laser);
+            font-size: 1.6rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s ease;
+            z-index: 10001;
+        }
+
+        .lightbox-btn:hover {
+            background: var(--aqua-laser);
+            color: var(--bg-deep-teal);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-btn.prev { right: 25px; }
+        .lightbox-btn.next { left: 25px; }
+
+        .lightbox-close {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
+            color: #ffffff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10001;
+            transition: 0.2s ease;
+        }
+
+        .lightbox-close:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        /* النوافذ المنبثقة العامة */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(6, 9, 19, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: #141c2e;
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            width: 100%;
+            max-width: 520px;
+            padding: 26px 28px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+            animation: modalFade 0.25s ease-out;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 14px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--sunset-tangerine);
+        }
+
+        .close-modal-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .close-modal-btn:hover {
+            color: #ef4444;
+        }
+
+        .terms-body {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            max-height: 340px;
+            overflow-y: auto;
+            padding-left: 8px;
+        }
+
+        .terms-body p {
+            margin-bottom: 12px;
+        }
+
+        /* نافذة التواصل بنمط كارت رجال أعمال فاخر وليموني فاتح */
+        #contactModal .modal-box {
+            background: linear-gradient(145deg, #1b2735 0%, #0d1622 100%);
+            border: 1px solid rgba(204, 255, 0, 0.25);
+            border-radius: 26px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(204, 255, 0, 0.08);
+            padding: 32px 28px;
+        }
+
+        #contactModal .modal-header h2 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #e2fd52;
+            letter-spacing: -0.5px;
+        }
+
+        .contact-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        .contact-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 18px 22px;
+            text-decoration: none;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #d9f99d, #84cc16);
+            opacity: 0.8;
+            transition: width 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(217, 249, 157, 0.45);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(163, 230, 53, 0.15);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+        }
+
+        .contact-card:hover::before {
+            width: 7px;
+        }
+
+        .contact-card-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .contact-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: rgba(217, 249, 157, 0.12);
+            border: 1px solid rgba(217, 249, 157, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            color: #d9f99d;
+            box-shadow: inset 0 0 12px rgba(217, 249, 157, 0.1);
+        }
+
+        .contact-details h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #f8fafc;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+
+        .contact-details p {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            font-weight: 600;
+            direction: ltr;
+            text-align: right;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-btn-action {
+            background: linear-gradient(135deg, #ecfccb 0%, #bef264 100%);
+            color: #142008;
+            padding: 9px 20px;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 900;
+            border: none;
+            box-shadow: 0 4px 14px rgba(190, 242, 100, 0.35);
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .contact-card:hover .contact-btn-action {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(190, 242, 100, 0.55);
+            background: #d9f99d;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>ظبطها</h1>
+        <p>تطبيقك المتكامل لإدارة كل ما تحتاجه بكل سلاسة وخفة على هاتفك وحاسوبك وبدون تعقيد.</p>
+    </header>
+
+    <!-- المعرض ثلاثي الأبعاد -->
+    <section class="girly">
+        <button class="nav-btn right-btn" id="right" title="السابق">
+            <img src="../img/right.svg" alt="Right">
+        </button>
+
+        <div class="carousel-stage" id="carouselStage">
+            <img class="carousel-item" src="../img/courses.png" alt="شاشة 1">
+            <img class="carousel-item" src="../img/do.png" alt="شاشة 2">
+            <img class="carousel-item" src="../img/notdo.png" alt="شاشة 3">
+            <img class="carousel-item" src="../img/pay.png" alt="شاشة 4">
+            <img class="carousel-item" src="../img/home1.png" alt="شاشة 5">
+            <img class="carousel-item" src="../img/profile.png" alt="شاشة 6">
+            <img class="carousel-item" src="../img/log.png" alt="شاشة 7">
+        </div>
+
+        <button class="nav-btn left-btn" id="left" title="التالي">
+            <img src="../img/left.svg" alt="Left">
+        </button>
+    </section>
+
+    <!-- قسم المزايا والمعلومات -->
+    <section class="info">
+        <div class="card sucurty" id="termsBtn">
+            <p>الشروط والأحكام</p>
+            <img src="../img/gavel.svg" alt="Gavel">
+        </div>
+
+        <div class="card conact" id="contactBtn">
+            <p>التواصل معنا</p>
+            <img src="../img/gid.svg" alt="Guide">
+        </div>
+
+        <a href="https://whatsapp.com/channel/0029Vb8aBmc4inonHiCpdV3n" target="_blank"> 
+            <div class="card grup">
+                <p>مجتمعنا</p>
+                <img src="../img/users.svg" alt="Users">
+            </div>    
+        </a>
+    </section>
+
+    <!-- قسم التحميل -->
+    <section class="downlod">
+        <a class="btn-link" id="android" href="https://drive.usercontent.google.com/download?id=1-34UqNMOqIIwj2jzntMxiPDLgRMB5GLL&export=download" download="zabt-ha.apk">
+            <div class="card primary">
+                <span>تحميل لنظام Android</span>
+                <img src="../img/android.svg" alt="Android">
+            </div>
+        </a>
+
+        <a class="btn-link" id="linux" href="https://drive.usercontent.google.com/download?id=1G1ztgzu0hYAVuymsZ0J_C_bJr3UI7jGU&export=download" download="zabt-ha-linux.tar.gz">
+            <div class="card">
+                <span>تحميل لنظام Linux</span>
+                <img src="../img/linux.svg" alt="Linux">
+            </div>
+        </a>
+
+        <a class="btn-link" id="windos">
+            <div class="card">
+                <span>تحميل لنظام Windows قريباً</span>
+                <img src="../img/windows.svg" alt="Windows">
+            </div>
+        </a>
+    </section>
+
+    <!-- نافذة عارض الصور بكامل الشاشة (Lightbox) -->
+    <div class="lightbox-modal" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <button class="lightbox-btn prev" id="lightboxPrev">&#10095;</button>
+        
+        <div class="lightbox-img-wrapper">
+            <img id="lightboxImage" src="" alt="عرض الشاشة الكاملة">
+        </div>
+
+        <button class="lightbox-btn next" id="lightboxNext">&#10094;</button>
+    </div>
+
+    <!-- نافذة الشروط والأحكام وسياسة الخصوصية -->
+    <div class="modal-overlay" id="termsModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>سياسة الخصوصية وشروط الاستخدام</h2>
+                <button class="close-modal-btn" id="closeTerms">&times;</button>
+            </div>
+            <div class="terms-body">
+                <p><strong>1. البيانات التي نجمعها:</strong> قد يطلب التطبيق بعض البيانات الأساسية مثل (الاسم، رقم الهاتف، والفئة العمرية).</p>
+                <p><strong>2. الغرض من جمع البيانات:</strong> يتم استخدام هذه البيانات حصرياً لأغراض بحثية وتطويرية؛ بهدف تحسين ميزات التطبيق، وتخصيص واجهة الاستخدام لتناسب الفئات العمرية المختلفة، وتقديم تجربة استخدام أفضل وأكثر استقراراً.</p>
+                <p><strong>3. حماية وأمان البيانات:</strong> نلتزم بالحفاظ الكامل على سرية بياناتك، ولا يتم بيعها أو مشاركتها أو تأجيرها لأي طرف ثالث أو جهات إعلانية تحت أي ظرف.</p>
+                <p><strong>4. التثبيت والأذونات:</strong> تثبيت ملفات الـ APK المباشرة يتطلب موافقة يدوية لمرة واحدة من إعدادات النظام للسماح بالتشغيل، ولا نطلب أي أذونات وصول غير ضرورية لنشاطك اليومي داخل التطبيق.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة التواصل معنا (Business Card Style) -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>قنوات الدعم والتواصل</h2>
+                <button class="close-modal-btn" id="closeContact">&times;</button>
+            </div>
+            <div class="contact-list">
+                <a href="https://wa.me/201142744823" target="_blank" class="contact-card">
+                    <div class="contact-card-right">
+                        <div class="contact-icon-box">💬</div>
+                        <div class="contact-details">
+                            <h3>محادثة واتساب</h3>
+                            <p>+20 114 274 4823</p>
+                        </div>
+                    </div>
+                    <span class="contact-btn-action">تواصل الآن</span>
+                </a>
+
+                <a href="mailto:mohabfahd015@gmail.com" class="contact-card">
+                    <div class="contact-card-right">
+                        <div class="contact-icon-box">✉️</div>
+                        <div class="contact-details">
+                            <h3>البريد الرسمي</h3>
+                            <p>mohabfahd015@gmail.com</p>
+                        </div>
+                    </div>
+                    <span class="contact-btn-action">إرسال بريد</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إدارة المعرض الثلاثي الأبعاد
+        const items = Array.from(document.querySelectorAll('.carousel-item'));
+        let currentIdx = 0;
+
+        function updateCarousel() {
+            items.forEach((item, index) => {
+                item.className = 'carousel-item';
+                
+                let diff = index - currentIdx;
+                const total = items.length;
+
+                if (diff > total / 2) diff -= total;
+                if (diff < -total / 2) diff += total;
+
+                if (diff === 0) {
+                    item.classList.add('active');
+                } else if (diff === 1) {
+                    item.classList.add('prev');
+                } else if (diff === -1) {
+                    item.classList.add('next');
+                } else if (diff === 2) {
+                    item.classList.add('far-prev');
+                } else if (diff === -2) {
+                    item.classList.add('far-next');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIdx = (currentIdx + 1) % items.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentIdx = (currentIdx - 1 + items.length) % items.length;
+            updateCarousel();
+        }
+
+        document.getElementById('left').addEventListener('click', nextSlide);
+        document.getElementById('right').addEventListener('click', prevSlide);
+
+        items.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                if (index === currentIdx) {
+                    showLightbox(index);
+                } else {
+                    currentIdx = index;
+                    updateCarousel();
+                }
+            });
+        });
+
+        // التقليب باللمس (Swipe)
+        let carouselTouchStartX = 0;
+        const stage = document.getElementById('carouselStage');
+
+        stage.addEventListener('touchstart', (e) => {
+            carouselTouchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        stage.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].screenX;
+            if (endX - carouselTouchStartX > 40) {
+                prevSlide();
+            } else if (carouselTouchStartX - endX > 40) {
+                nextSlide();
+            }
+        }, false);
+
+        updateCarousel();
+
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImage');
+        const lightboxClose = document.getElementById('lightboxClose');
+        const lightboxPrev = document.getElementById('lightboxPrev');
+        const lightboxNext = document.getElementById('lightboxNext');
+        
+        let lbCurrentIndex = 0;
+
+        function showLightbox(index) {
+            lbCurrentIndex = index;
+            lightboxImg.src = items[lbCurrentIndex].src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+        }
+
+        function nextLightboxImg() {
+            lbCurrentIndex = (lbCurrentIndex + 1) % items.length;
+            lightboxImg.src = items[lbCurrentIndex].src;
+        }
+
+        function prevLightboxImg() {
+            lbCurrentIndex = (lbCurrentIndex - 1 + items.length) % items.length;
+            lightboxImg.src = items[lbCurrentIndex].src;
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxNext.addEventListener('click', nextLightboxImg);
+        lightboxPrev.addEventListener('click', prevLightboxImg);
+
+        window.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'ArrowRight') prevLightboxImg();
+            if (e.key === 'ArrowLeft') nextLightboxImg();
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        let lbTouchStartX = 0;
+        lightbox.addEventListener('touchstart', (e) => {
+            lbTouchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        lightbox.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].screenX;
+            if (endX - lbTouchStartX > 40) {
+                prevLightboxImg();
+            } else if (lbTouchStartX - endX > 40) {
+                nextLightboxImg();
+            }
+        }, false);
+
+        // نوافذ الشروط والتواصل
+        const termsBtn = document.getElementById('termsBtn');
+        const termsModal = document.getElementById('termsModal');
+        const closeTerms = document.getElementById('closeTerms');
+
+        termsBtn.addEventListener('click', () => termsModal.classList.add('active'));
+        closeTerms.addEventListener('click', () => termsModal.classList.remove('active'));
+        termsModal.addEventListener('click', (e) => {
+            if (e.target === termsModal) termsModal.classList.remove('active');
+        });
+
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+        const closeContact = document.getElementById('closeContact');
+
+        contactBtn.addEventListener('click', () => contactModal.classList.add('active'));
+        closeContact.addEventListener('click', () => contactModal.classList.remove('active'));
+        contactModal.addEventListener('click', (e) => {
+            if (e.target === contactModal) contactModal.classList.remove('active');
+        });
+    </script>
+</body>
+
+</html>
